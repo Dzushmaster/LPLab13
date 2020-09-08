@@ -2,7 +2,7 @@
 #include "Error.h"
 #include <time.h>
 using namespace Out;
-#define FST_STRUCT \
+//#define FST_STRUCT \
 FST::NODE(1, FST::RELATION('a',1)),\
 FST::NODE(1,FST::RELATION('f',2)),\
 FST::NODE(4,FST::RELATION('g',2), FST::RELATION('b',3), FST::RELATION('c',3), FST::RELATION('d',3)), \
@@ -40,6 +40,7 @@ FST::NODE()
 		*out.stream << IN_CODE_ENDL << "----- Анализ ----- ";
 		strftime(buffer, 300, " Дата: %d.%m.%Y %H:%M:%S", &timeinfo);
 		*out.stream << buffer << " ----- " << IN_CODE_ENDL << IN_CODE_ENDL;
+#ifdef FST_STRUCT
 		while (!(in.text[j] == '\0'))
 		{
 			int i = 0;
@@ -63,7 +64,7 @@ FST::NODE()
 			}
 			delete[]TextChain;
 		}
-		
+#endif // FST_STRUCT
 	}
 	void Out::OutClose(OUT out)
 	{
