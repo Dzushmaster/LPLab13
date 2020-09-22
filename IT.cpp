@@ -23,10 +23,10 @@ Entry GetEntry(IdTable& idtable, int n)
 		throw ERROR_THROW(116);
 	return idtable.table[n];
 }
-int IsId(IdTable& idtable, char id[ID_MAXSIZE])
-{
-	return idtable.size;
-}
+//int IsId(IdTable& idtable, char id[ID_MAXSIZE])
+//{
+//	idtable.table;
+//}
 void Delete(IdTable& idtable)
 {
 	delete[] idtable.table;
