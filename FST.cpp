@@ -72,6 +72,16 @@ void inputToLexTable(LT::LexTable lextable, In::IN in, char lexem)
 	lextable.table[lextable.size].idxTI = lextable.size;
 	lextable.table[lextable.size++].sn = in.lines;
 }
+void inputToIdTable(IT::IdTable idtable, In::IN in, IT::IDDATATYPE dataType)
+{
+	idtable.table[idtable.size].iddatatype = dataType;
+	idtable.table[idtable.size].idxfirstLE = idtable.size;
+	//strncpy(idtable.table[idtable.size].id,in.text)
+}
+void typeofId(IT::IdTable idtable)
+{
+	//idtable.table[idtable.size].
+}
 void choiceOfMachines(int wordSize, In::IN in, LT::LexTable lextable, IT::IdTable idtable)
 {
 	char* word = new char[wordSize];
@@ -126,15 +136,18 @@ void choiceOfMachines(int wordSize, In::IN in, LT::LexTable lextable, IT::IdTabl
 		isLexeme = true;
 		return;
 	}
-	//if (!isLexeme)//если не литерал, значит идентификатор
-	//{
-	//	if (isString)
-	//	{
-	//		idtable.table[lextable.size].iddatatype = IT::IDDATATYPE::INT;
-	//		idtable.table[lextable.size].
-	//	}
-	//	if(isInteger)
-	//		idtable.table[lextable.size].iddatatype = IT::IDDATATYPE::STR;
-	//	//добавить еще элементов для function, и т.д.
-	//}
+	if (!isLexeme)//если не литерал, значит идентификатор
+	{
+		if (isString)
+		{
+			inputToIdTable(idtable, in, IT::IDDATATYPE::INT);
+			return;
+		}
+		if (isInteger)
+		{
+			inputToIdTable(idtable, in, IT::IDDATATYPE::STR);
+			return;
+		}
+		//добавить еще элементов для function, и т.д.
+	}
 }
