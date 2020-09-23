@@ -11,23 +11,23 @@ IdTable IT::Create(int size)
 	idtable.table = new Entry[size];
 	return idtable;
 }
-void Add(IdTable& idtable, Entry entry)
+void IT::Add(IdTable& idtable, Entry entry)
 {
 	idtable.table[idtable.size++] = entry;
 	if (idtable.size == TI_MAXSIZE)
 		idtable.size--;
 }
-Entry GetEntry(IdTable& idtable, int n)
+Entry IT::GetEntry(IdTable& idtable, int n)
 {
 	if (n > idtable.size)
 		throw ERROR_THROW(116);
 	return idtable.table[n];
 }
-//int IsId(IdTable& idtable, char id[ID_MAXSIZE])
+//int IT::IsId(IdTable& idtable, char id[ID_MAXSIZE])
 //{
 //	idtable.table;
 //}
-void Delete(IdTable& idtable)
+void IT::Delete(IdTable& idtable)
 {
 	delete[] idtable.table;
 }

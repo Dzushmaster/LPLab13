@@ -20,7 +20,8 @@
 #define LEX_MINUS 'v'
 #define LEX_STAR 'v'
 #define LEX_DIRSLASH 'v'				//лексема для /
-
+#define LEX_MAIN 'm'
+//подключить в in эту библиотеку и если символ не нужно разбирать, то просто записать эту лексему
 namespace LT//таблица лексем
 {
 	struct Entry//строка таблицы лексем

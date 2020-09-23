@@ -1,4 +1,5 @@
 #include "FST.h"
+#include <vector>
 namespace FST
 {
 	RELATION::RELATION(char c, short nn)
@@ -64,4 +65,76 @@ namespace FST
 		delete[] rstates;
 		return (rc ? (fst.rstates[fst.nstates - 1] == lstring) : rc);
 	}
+}
+void inputToLexTable(LT::LexTable lextable, In::IN in, char lexem)
+{
+	lextable.table[lextable.size].lexema[0] = lexem;
+	lextable.table[lextable.size].idxTI = lextable.size;
+	lextable.table[lextable.size++].sn = in.lines;
+}
+void choiceOfMachines(int wordSize, In::IN in, LT::LexTable lextable, IT::IdTable idtable)
+{
+	char* word = new char[wordSize];
+	short sizeofText = in.size - wordSize-1;
+	for (int i = 0; i < wordSize; i++)
+		word[i] = in.text[sizeofText + i];
+	FST::FST fst(word, wordSize+1, FST_INTEGER);
+	bool isLexeme = false;
+	static bool isInteger = false;
+	static bool isString = false;
+	word[wordSize] = '\0';
+	if (FST::execute(fst))
+	{
+		inputToLexTable(lextable, in, LEX_INTEGER);
+		isInteger = true;
+		isLexeme = true;
+		return;
+	}
+	FST::FST fst(word, wordSize + 1, FST_STRING);
+	if (FST::execute(fst))
+	{
+		inputToLexTable(lextable, in, LEX_STRING);
+		isString = true;
+		isLexeme = true;
+		return;
+	}
+	FST::FST fst(word, wordSize + 1, FST_FUNCTION);
+	if (FST::execute(fst))
+	{
+		inputToLexTable(lextable, in, LEX_FUNCTION);
+		isLexeme = true;
+		return;
+	}
+	FST::FST fst(word, wordSize + 1, FST_DECLARE);
+	if (FST::execute(fst))
+	{
+		inputToLexTable(lextable, in, LEX_DECLARE);
+		isLexeme = true;
+		return;
+	}
+	FST::FST fst(word, wordSize + 1, FST_PRINT);
+	if (FST::execute(fst))
+	{
+		inputToLexTable(lextable, in, LEX_PRINT);
+		isLexeme = true;
+		return;
+	}
+	FST::FST fst(word, wordSize + 1, FST_RETURN);
+	if (FST::execute(fst))
+	{
+		inputToLexTable(lextable, in, LEX_RETURN);
+		isLexeme = true;
+		return;
+	}
+	//if (!isLexeme)//если не литерал, значит идентификатор
+	//{
+	//	if (isString)
+	//	{
+	//		idtable.table[lextable.size].iddatatype = IT::IDDATATYPE::INT;
+	//		idtable.table[lextable.size].
+	//	}
+	//	if(isInteger)
+	//		idtable.table[lextable.size].iddatatype = IT::IDDATATYPE::STR;
+	//	//добавить еще элементов для function, и т.д.
+	//}
 }

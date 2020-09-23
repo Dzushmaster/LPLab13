@@ -18,6 +18,7 @@ int wmain(int argc, wchar_t* argv[])
 	Log::LOG log = Log::INITLOG;
 	try
 	{
+		//создаю таблицу лексем и таблицу идентификаторов//стрижка в субботу
 		Parm::PARM parm = Parm::getparm(argc, argv);
 		log = Log::getlog(parm.log);
 		Log::WriteLine(log, L"Тест:", L"без ошибок", L"");

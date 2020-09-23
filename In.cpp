@@ -1,7 +1,8 @@
 #include "Error.h"
 #include "In.h"
-#include ""
+#include "FST.h"
 #include <fstream>
+#include "LT.h"
 using namespace In;
 //если нельзя разобрать автоматом, то идентификатор
 IN In::getin(wchar_t inFile[])
@@ -13,7 +14,9 @@ IN In::getin(wchar_t inFile[])
 	IN in;
 	in.text = new unsigned char[IN_MAX_LEN_TEXT];
 	int CurrentPosition = 0;
-	unsigned char* pointerBeginWord;
+	int wordSize = 0;
+	LT::LexTable* lt = new LT::LexTable();
+	IT::IdTable* id = new IT::IdTable();
 	for (;;)//проверка символов на разрешенность
 	{
 		Uch = FileIn.get();
@@ -41,7 +44,7 @@ IN In::getin(wchar_t inFile[])
 			break;
 		case IN::T:
 		{
-			pointerBeginWord = in.text;//указатель на начало слова для конечного автомата
+			wordSize++;
 			in.text[in.size] = Uch;//текущий символ
 			isExpression = false;
 			isSpace = false;
@@ -94,6 +97,7 @@ IN In::getin(wchar_t inFile[])
 				else if (Uch == '\n' && !isQuote)
 					throw ERROR_THROW_IN(105, in.lines, CurrentPosition);
 			}
+			break;
 		}
 		default:
 			in.text[in.size] = in.code[Uch];
@@ -105,13 +109,12 @@ IN In::getin(wchar_t inFile[])
 		}
 		if (!isWord)
 		{
-
+			choiceOfMachines(wordSize,in, *lt, *id);//для выбора автоматов
+			wordSize = 0;
 		}
 
 	}
 	in.text[in.size] = '\0';
-	//автомат автоматов
-	//не нужно знать количество конечных состояний автомата, просто через strlen()
 	FileIn.close();
 	return in;
 }
