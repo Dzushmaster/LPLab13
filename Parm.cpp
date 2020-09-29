@@ -45,7 +45,7 @@ using namespace Parm;
 		else
 		{
 			if (wcslen(argv[indexOut]) > PARM_MAX_SIZE) throw ERROR_THROW(104);
-			wcscpy_s(parm.out, argv[indexOut] + 5);
+			wcscpy_s(parm.out, argv[indexOut+1] + 5);
 		}
 		
 		if (!CheckLog)
@@ -56,7 +56,7 @@ using namespace Parm;
 		else
 		{
 			if (wcslen(argv[indexLog]) > PARM_MAX_SIZE) throw ERROR_THROW(104);
-			wcscpy_s(parm.log, argv[indexLog] + 5);
+			wcscpy_s(parm.log, argv[indexLog+2] + 5);
 		}
 		return parm;
 	}
