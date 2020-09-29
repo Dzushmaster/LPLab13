@@ -2,10 +2,10 @@
 #include "In.h"
 #include "FST.h"
 #include <fstream>
-#include "LT.h"
+
 using namespace In;
 //если нельзя разобрать автоматом, то идентификатор
-IN In::getin(wchar_t inFile[])
+IN In::getin(wchar_t inFile[],LT::LexTable lextable,IT::IdTable idtable)
 {
 	std::ifstream FileIn(inFile);
 	if (!FileIn.is_open())
@@ -15,8 +15,6 @@ IN In::getin(wchar_t inFile[])
 	in.text = new unsigned char[IN_MAX_LEN_TEXT];
 	int CurrentPosition = 0;
 	int wordSize = 0;
-	LT::LexTable* lt = new LT::LexTable();
-	IT::IdTable* id = new IT::IdTable();
 	for (;;)//проверка символов на разрешенность
 	{
 		Uch = FileIn.get();
@@ -109,7 +107,7 @@ IN In::getin(wchar_t inFile[])
 		}
 		if (!isWord)
 		{
-			choiceOfMachines(wordSize,in, *lt, *id);//для выбора автоматов
+			choiceOfMachines(wordSize,in, lextable, idtable);//для выбора автоматов
 			wordSize = 0;
 		}
 

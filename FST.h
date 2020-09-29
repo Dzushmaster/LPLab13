@@ -62,10 +62,38 @@ FST::NODE(1, FST::RELATION('n',4)),\
 FST::NODE(1, FST::RELATION('t',5)),\
 FST::NODE()
 
+#define FST_IDENTIFICATOR \
+FST::NODE(26, FST::RELATION('a',1),\
+			  FST::RELATION('b',1),\
+			  FST::RELATION('b',1),\
+			  FST::RELATION('c',1),\
+			  FST::RELATION('d',1),\
+			  FST::RELATION('e',1),\
+			  FST::RELATION('f',1),\
+			  FST::RELATION('g',1),\
+			  FST::RELATION('h',1),\
+			  FST::RELATION('i',1),\
+			  FST::RELATION('j',1),\
+			  FST::RELATION('k',1),\
+			  FST::RELATION('l',1),\
+			  FST::RELATION('m',1),\
+			  FST::RELATION('n',1),\
+			  FST::RELATION('o',1),\
+			  FST::RELATION('p',1),\
+			  FST::RELATION('q',1),\
+			  FST::RELATION('r',1),\
+			  FST::RELATION('s',1),\
+			  FST::RELATION('t',1),\
+			  FST::RELATION('u',1),\
+			  FST::RELATION('v',1),\
+			  FST::RELATION('w',1),\
+			  FST::RELATION('x',1),\
+			  FST::RELATION('y',1),\
+			  FST::RELATION('z',1)),\
+FST::NODE()
 
 namespace FST
 {
-
 	struct RELATION		//ребро:символ -> вершина графа переходов КА
 	{
 		char symbol;	//символ перехода
@@ -91,3 +119,6 @@ namespace FST
 	bool execute(FST& fst);
 }
 void choiceOfMachines(int wordSize, In::IN in, LT::LexTable lextable, IT::IdTable idtable);
+LT::Entry inputToLexTable(LT::LexTable lextable, In::IN in,char lexem);
+IT::Entry inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bool* isTypeOfId);
+IT::IDTYPE typeofId(bool* isTypeOfId);

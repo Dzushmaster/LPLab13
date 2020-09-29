@@ -1,14 +1,16 @@
 #pragma once
+#include "LT.h"
+#include "IT.h"
 #define IN_MAX_LEN_TEXT 1024*1024 
 #define IN_CODE_ENDL '\n'
 #define IN_CODE_TABLE {\
- /*0-15*/IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F,'|', IN::F, IN::F, IN::F, IN::F, IN::F,\
- /*16-31*/   IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F,\
- /*32-47*/   IN::S, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::Q, IN::E, IN::E, IN::E, IN::E, IN::E, IN::E, IN::F, IN::E,\
- /*48-63*/   IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::F, IN::E, IN::F, IN::E, IN::F, IN::F,\
- /*64-79*/   IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::T, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F,\
- /*80-95*/   IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F,\
- /*96-111*/   IN::F, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::F, IN::T, IN::F, IN::F, IN::T, IN::T, IN::T, IN::T,\
+ /*0-15*/	   IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F,'|', IN::F, IN::F, IN::F, IN::F, IN::F,\
+ /*16-31*/	   IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F,\
+ /*32-47*/     IN::S, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::Q, IN::E, IN::E, IN::E, IN::E, IN::E, IN::E, IN::F, IN::E,\
+ /*48-63*/     IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::F, IN::E, IN::F, IN::E, IN::F, IN::F,\
+ /*64-79*/     IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::T, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F,\
+ /*80-95*/     IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F,\
+ /*96-111*/    IN::F, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::T, IN::F, IN::T, IN::F, IN::F, IN::T, IN::T, IN::T, IN::T,\
  /*112-127*/   IN::T, IN::F, IN::T, IN::T, IN::T, IN::T, IN::F, IN::F, IN::T, IN::T, IN::T, IN::E,IN::F, IN::E, IN::F, IN::F,\
                                                                                                                     \
 /*128-143*/    IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, IN::F, \
@@ -26,15 +28,10 @@ namespace In
 	{
 		enum { T = 1024, F = 2048, I = 4096, E = 8192, S = 16384, Q = 32768 };
 		int size = 0;
-		int lines = 0;
+		int lines = 1;
 		int ignor = 0;
 		unsigned char* text;	//»сходный код Windows-1251
 		int code[256] = IN_CODE_TABLE;			//“аблица проверки
 	};
-	struct ShortLexems
-	{
-		int wordPosition = 0;//позици€ в слове дл€ поиска ошибок
-		char Lexem = ' ';//литерал, который будет записан в конечный файл
-	};
-	IN getin(wchar_t inFile[]);
+	IN getin(wchar_t inFile[],LT::LexTable lextable, IT::IdTable idtable );
 }

@@ -13,7 +13,8 @@ namespace IT
 	struct Entry						//строка таблицы идентификаторов
 	{
 		int idxfirstLE;					//индекс первой строки в таблице лексем
-		char id[ID_MAXSIZE];			//идентификатор(автоматически усекается до ID_MAXSIZE)
+		char id[ID_MAXSIZE+1];			//идентификатор(автоматически усекается до ID_MAXSIZE)
+		//string libraryFunction - для библиотечных функций
 		IDDATATYPE iddatatype;			//тип данных
 		IDTYPE idtype;					//тип идентификатора
 		union

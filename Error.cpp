@@ -12,13 +12,13 @@ namespace Error
 		ERROR_ENTRY(100,"Параметр -in должен быть задан"),
 		ERROR_ENTRY_NODEF(101), ERROR_ENTRY_NODEF(102), ERROR_ENTRY_NODEF(103),
 		ERROR_ENTRY(104,"Превышена длина входного параметра"),
-		ERROR_ENTRY(105,"Отсутствует закрывающая кавычка"), ERROR_ENTRY(106,"Превышен максимальный размер таблицы идентификаторов"), ERROR_ENTRY(107,"Превышен максимальный размер таблицы лексем"), ERROR_ENTRY_NODEF(108), ERROR_ENTRY_NODEF(109),
+		ERROR_ENTRY_NODEF(105), ERROR_ENTRY_NODEF(106), ERROR_ENTRY_NODEF(107), ERROR_ENTRY_NODEF(108), ERROR_ENTRY_NODEF(109),
 		ERROR_ENTRY(110,"Ошибка при открытии файла с исходным кодом (-in)"),
 		ERROR_ENTRY(111,"Недопустимый символ в исходном файле (-in)"),
 		ERROR_ENTRY(112,"Ошибка при создании файла протокола (-log)"),
-		ERROR_ENTRY_NODEF(113), ERROR_ENTRY_NODEF(114), ERROR_ENTRY(115,"Превышен размер лексемы"),
+		ERROR_ENTRY(113,"Ошибка при создании файла таблицы лексем"), ERROR_ENTRY_NODEF(114), ERROR_ENTRY(115,"Превышен размер лексемы"),
 		ERROR_ENTRY(116,"Попытка попасть за пределы заполненной части массива"), ERROR_ENTRY_NODEF(117), ERROR_ENTRY_NODEF(118),ERROR_ENTRY_NODEF(119),
-		ERROR_ENTRY_NODEF10(120),ERROR_ENTRY_NODEF10(130), ERROR_ENTRY_NODEF10(140), ERROR_ENTRY_NODEF10(150), ERROR_ENTRY_NODEF10(160), ERROR_ENTRY_NODEF10(170), ERROR_ENTRY_NODEF10(180), ERROR_ENTRY_NODEF10(190),
+		ERROR_ENTRY(120,"Отсутствует закрывающая кавычка"),ERROR_ENTRY(121,"Превышен максимальный размер таблицы идентификаторов"), ERROR_ENTRY(122, "Превышен максимальный размер таблицы лексем"), ERROR_ENTRY(123, "Недопустимый символ начала идентификатора"), ERROR_ENTRY_NODEF10(160), ERROR_ENTRY_NODEF10(170), ERROR_ENTRY_NODEF10(180), ERROR_ENTRY_NODEF10(190),
 		ERROR_ENTRY_NODEF100(200), ERROR_ENTRY_NODEF100(300), ERROR_ENTRY_NODEF100(400), ERROR_ENTRY_NODEF100(500), ERROR_ENTRY_NODEF100(600), ERROR_ENTRY_NODEF100(700), ERROR_ENTRY_NODEF100(800), ERROR_ENTRY_NODEF100(900)
 	};
 }

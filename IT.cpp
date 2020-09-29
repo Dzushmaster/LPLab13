@@ -4,18 +4,18 @@ using namespace IT;
 IdTable IT::Create(int size)
 {
 	if (size > TI_MAXSIZE)
-		throw ERROR_THROW(106);
+		throw ERROR_THROW(121);
 	IdTable idtable;
-	idtable.maxsize = size;
-	idtable.size = 0;
-	idtable.table = new Entry[size];
+	idtable.maxsize = TI_MAXSIZE;
+	idtable.size = size;
+	idtable.table = new Entry[TI_MAXSIZE];
 	return idtable;
 }
 void IT::Add(IdTable& idtable, Entry entry)
 {
 	idtable.table[idtable.size++] = entry;
-	if (idtable.size == TI_MAXSIZE)
-		idtable.size--;
+	if (idtable.size > TI_MAXSIZE)
+		throw ERROR_THROW(121);
 }
 Entry IT::GetEntry(IdTable& idtable, int n)
 {

@@ -1,11 +1,9 @@
 #include "LT.h"
 #include "Error.h"
-#include <iostream>
+
 using namespace LT;
 LexTable LT::Create(int size)//лексемы t, i, f и т.д.
 {
-	if (size > LT_MAXSIZE)
-		throw ERROR_THROW(106);
 	LexTable lextable;
 	lextable.table = new Entry[size];
 	lextable.maxsize = size;
@@ -14,9 +12,7 @@ LexTable LT::Create(int size)//лексемы t, i, f и т.д.
 }
 void LT::Add(LexTable& lextable, Entry entry)
 {
-	if (strlen(entry.lexema) > LEXEMA_FIXSIZE)
-		throw ERROR_THROW(115);
-	lextable.table[lextable.size++] = entry;
+	lextable.table[lextable.size] = entry;
 }
 Entry LT::GetEntry(LexTable& lextable, int n)
 {
@@ -28,3 +24,22 @@ void LT::Delete(LexTable& lextable)
 {
 	delete[] lextable.table;
 }
+LT::WriteInFile LT::OpenStream()
+{
+	WriteInFile stream;
+	stream.stream = new std::ofstream;
+	stream.stream->open(stream.nameOfFile);
+	if (!stream.stream->is_open())
+		throw ERROR_THROW(113);
+	return stream;
+}
+//переделать
+//void LT::WriteLexemTable(WriteInFile writeFile, LexTable lextable)
+//{
+//	*writeFile.stream << "№ идентификатора\tИдентификатор\tТип данных\tТип идентификатора\tИндекс в ТЛ\tЗначение\n";
+//	for (int i = 0; i <= lextable.size; i++)
+//	{
+//		*writeFile.stream << i <<' '<<lextable.table[i].lexema<<' '<< lextable.table[i].sn <<' '<<lextable.table[i].idxTI;
+//		*writeFile.stream << '\n';
+//	}
+//}
