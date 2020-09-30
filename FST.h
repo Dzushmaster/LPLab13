@@ -62,6 +62,9 @@ FST::NODE(1, FST::RELATION('n',4)),\
 FST::NODE(1, FST::RELATION('t',5)),\
 FST::NODE()
 
+
+
+
 #define FST_IDENTIFICATOR \
 FST::NODE(26, FST::RELATION('a',1),\
 			  FST::RELATION('b',1),\
@@ -119,6 +122,7 @@ namespace FST
 	bool execute(FST& fst);
 }
 void choiceOfMachines(int wordSize, In::IN in, LT::LexTable lextable, IT::IdTable idtable);
-LT::Entry inputToLexTable(LT::LexTable lextable, In::IN in,char lexem);
-IT::Entry inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bool* isTypeOfId);
+void inputToLexTable(LT::LexTable lextable, In::IN in,char lexem);
+void inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bool* isTypeOfId);
 IT::IDTYPE typeofId(bool* isTypeOfId);
+

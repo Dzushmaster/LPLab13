@@ -12,7 +12,9 @@ LexTable LT::Create(int size)//лексемы t, i, f и т.д.
 }
 void LT::Add(LexTable& lextable, Entry entry)
 {
-	lextable.table[lextable.size] = entry;
+	lextable.table[lextable.size++] = entry;
+	if (lextable.size > LT_MAXSIZE)
+		throw ERROR_THROW(122);
 }
 Entry LT::GetEntry(LexTable& lextable, int n)
 {
@@ -34,12 +36,12 @@ LT::WriteInFile LT::OpenStream()
 	return stream;
 }
 //переделать
-//void LT::WriteLexemTable(WriteInFile writeFile, LexTable lextable)
-//{
-//	*writeFile.stream << "№ идентификатора\tИдентификатор\tТип данных\tТип идентификатора\tИндекс в ТЛ\tЗначение\n";
-//	for (int i = 0; i <= lextable.size; i++)
-//	{
-//		*writeFile.stream << i <<' '<<lextable.table[i].lexema<<' '<< lextable.table[i].sn <<' '<<lextable.table[i].idxTI;
-//		*writeFile.stream << '\n';
-//	}
-//}
+void LT::WriteLexemTable(WriteInFile writeFile, LexTable lextable)
+{
+	*writeFile.stream << "№ идентификатора\tИдентификатор\tТип данных\tТип идентификатора\tИндекс в ТЛ\tЗначение\n";
+	for (int i = 0; i <= lextable.size; i++)
+	{
+		*writeFile.stream << i <<' '<<lextable.table[i].lexema<<' '<< lextable.table[i].sn <<' '<<lextable.table[i].idxTI;
+		*writeFile.stream << '\n';
+	}
+}

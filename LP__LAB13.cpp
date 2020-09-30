@@ -24,11 +24,13 @@ int wmain(int argc, wchar_t* argv[])
 		Log::WriteLine(log, L"Тест:", L"без ошибок", L"");
 		Log::WriteLog(log);
 		Log::WriteParm(log, parm);
-		LT::LexTable lextable = LT::Create(1);
-		IT::IdTable idtable = IT::Create(1);
+		//------------------Работает---------------
+		LT::LexTable lextable = LT::Create(LT_MAXSIZE);
+		IT::IdTable idtable = IT::Create(TI_MAXSIZE);
+		//-----------------------------------------
 		In::IN in = In::getin(parm.in, lextable,idtable);
 		LT::WriteInFile LTFile= LT::OpenStream();
-		LT::WriteLexemTable(LTFile, lextable);
+//		LT::WriteLexemTable(LTFile, lextable);
 		Log::WriteIn(log, in);
 		Out::OUT out = Out::getout(parm.out);
 		Out::WriteAnalyze(out, in, log);

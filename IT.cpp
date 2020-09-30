@@ -1,5 +1,7 @@
 #include "IT.h"
+#include "LT.h"
 #include "Error.h"
+
 using namespace IT;
 IdTable IT::Create(int size)
 {
@@ -23,10 +25,12 @@ Entry IT::GetEntry(IdTable& idtable, int n)
 		throw ERROR_THROW(116);
 	return idtable.table[n];
 }
-//int IT::IsId(IdTable& idtable, char id[ID_MAXSIZE])
-//{
-//	idtable.table;
-//}
+int IT::IsId(IdTable& idtable, char id[ID_MAXSIZE])
+{
+	if (strcmp(idtable.table->id, id) == 0)
+		return (int)id;
+	return LT_TI_NULLIDX;
+}
 void IT::Delete(IdTable& idtable)
 {
 	delete[] idtable.table;
