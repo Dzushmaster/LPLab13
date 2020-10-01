@@ -1,5 +1,5 @@
 #include "FST.h"
-#include <list>
+#include "Machines.h"
 namespace FST
 {
 	RELATION::RELATION(char c, short nn)
@@ -66,36 +66,9 @@ namespace FST
 		return (rc ? (fst.rstates[fst.nstates - 1] == lstring) : rc);
 	}
 }
-void inputToLexTable(LT::LexTable lextable, In::IN in, char lexem)//работает
-{
-	LT::Entry partOfTable;
-	partOfTable.lexema = lexem;
-	partOfTable.sn = in.lines;
-	partOfTable.idxTI = lextable.size+1;
-	LT::Add(lextable,partOfTable);
-}
 //полностью переделать функцию снизу
-void inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bool* isTypeOfId)//кажется, работает, но как записать туда значение, записанное в идентификаторе
-{
-	IT::Entry partOfTable;
-	strncpy_s(partOfTable.id, word,5);
-	partOfTable.iddatatype = dataType;
-	partOfTable.idxfirstLE = idtable.size+1;
-	partOfTable.idtype = typeofId(isTypeOfId);
-	IT::Add(idtable, partOfTable);
-	//форматированный вывод std::cout.width(5);
-	//std::cout.setf(std::ios::left);
-	std::cout<< partOfTable.id << ": " << partOfTable.iddatatype << ": " << idtable.size << ": " << partOfTable.idtype << '\n';
-}
-IT::IDTYPE typeofId(bool* isTypeOfId)//как определить, что это литерал или параметр
-{
-	if (isTypeOfId[0])			//переменная
-		return IT::IDTYPE::V;
-	if (isTypeOfId[1])			//функция
-		return IT::IDTYPE::F;	
-}//сделать автомат для проверки чисел в идентификатор
 void choiceOfMachines(int wordSize, In::IN in, LT::LexTable lextable, IT::IdTable idtable)//переработать функцию
-{//попробовать в массиве вызывать функцию, и туда отправлять список автоматов
+{
 	// если есть цифра - литерал, если есть кавычка, тоже литерал
 	char* word = new char[wordSize];
 	short sizeofText = in.size - wordSize - 1;
@@ -103,80 +76,13 @@ void choiceOfMachines(int wordSize, In::IN in, LT::LexTable lextable, IT::IdTabl
 	for (int i = 0; i < wordSize; i++)
 		word[i] = in.text[sizeofText + i];
 	word[wordSize] = '\0';
-	bool isLexeme = false;
-	static bool isInteger = false;
-	static bool isString = false;
-	bool isTypeOfId[AMOUNTTYPES];//переменная, функция, литерал, параметр
 	//во время создания каждого элемента fst счетчик размера таблицы лексем обнуляется
 	//можно создать возврщаемое значение и по позвращении из функции, записывать его в size
 	//просто в статическую переменную
-	FST::FST fst0(word, wordSize + 1, FST_INTEGER);
-	if (FST::execute(fst0))
+	bool Disassembled = false;
+	ALL_MACHINES;
+	for (int kingOfMachine = 0; kingOfMachine < AMOUNTLEXEM && !Disassembled; kingOfMachine++)
 	{
-		inputToLexTable(lextable, in, LEX_INTEGER);
-		isInteger = true;
-		isLexeme = true;
-		return;
-	}
-	FST::FST fst1(word, wordSize + 1, FST_STRING);
-	if (FST::execute(fst1))
-	{
-		inputToLexTable(lextable, in, LEX_STRING);
-		isString = true;
-		isLexeme = true;
-		return;
-	}
-	FST::FST fst2(word, wordSize + 1, FST_FUNCTION);
-	if (FST::execute(fst2))
-	{
-		inputToLexTable(lextable, in, LEX_FUNCTION);
-		isLexeme = true;
-		isTypeOfId[1] = true;
-		return;
-	}
-	FST::FST fst3(word, wordSize + 1, FST_DECLARE);
-	if (FST::execute(fst3))
-	{
-		inputToLexTable(lextable, in, LEX_DECLARE);
-		isLexeme = true;
-		isTypeOfId[0] = true;
-		return;
-	}
-	FST::FST fst4(word, wordSize + 1, FST_PRINT);
-	if (FST::execute(fst4))
-	{
-		inputToLexTable(lextable, in, LEX_PRINT);
-		isLexeme = true;
-		return;
-	}
-	FST::FST fst5(word, wordSize + 1, FST_RETURN);
-	if (FST::execute(fst5))
-	{
-		inputToLexTable(lextable, in, LEX_RETURN);
-		isLexeme = true;
-		return;
-	}
-	if (!isLexeme)//если не лексема, значит идентификатор
-	{
-		
-		/*FST::FST fst6((char*)word[0], 2, FST_IDENTIFICATOR);
-		if(!FST::execute(fst6))
-			throw ERROR_THROW_IN(123,in.lines,sizeofText);*/
-		
-		if (isInteger)
-		{
-			idtable.table[idtable.size].idtype = IT::IDTYPE::P;
-			inputToIdTable(idtable, IT::IDDATATYPE::INT, word, isTypeOfId);
-			isInteger = false;
-			return;
-		}
-		if (isString)
-		{
-			idtable.table[idtable.size].idtype = IT::IDTYPE::P;
-			inputToIdTable(idtable, IT::IDDATATYPE::STR, word,isTypeOfId);
-			isString = false;
-			return;
-		}
-		//добавить еще элементов для function, и т.д.
+		Disassembled = changingMachine(word,in.lines,lextable,idtable,CHOOSINGMACHINE[kingOfMachine],kingOfMachine);
 	}
 }
