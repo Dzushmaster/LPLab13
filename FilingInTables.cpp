@@ -2,7 +2,7 @@
 #include "IT.h"
 #include "LT.h"
 
-void inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bool* isTypeOfId)//кажетс€, работает, но как записать туда значение, записанное в идентификаторе
+int inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bool* isTypeOfId)//кажетс€, работает, но как записать туда значение, записанное в идентификаторе
 {
 	IT::Entry partOfTable;
 	strncpy_s(partOfTable.id, word, 5);
@@ -11,86 +11,115 @@ void inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bo
 	partOfTable.idtype = typeofId(isTypeOfId);
 	IT::Add(idtable, partOfTable);
 	//форматированный вывод std::cout.width(5);
+	std::cout << partOfTable.id << ':' << partOfTable.iddatatype << ':' << partOfTable.idtype << ':' << partOfTable.idxfirstLE <<'\n';
 	//std::cout.setf(std::ios::left);
-	std::cout << partOfTable.id << ": " << partOfTable.iddatatype << ": " << idtable.size << ": " << partOfTable.idtype << '\n';
+
+	return idtable.size;
 }
 
-void inputToLexTable(LT::LexTable lextable, int line, char lexem)//работает
+std::ofstream CreateFileForID()
+{
+	std::ofstream stream;
+	stream.open("Table_Of_Identificators.txt");
+	if (!stream.is_open())
+		throw ERROR_THROW(114);
+	return stream;
+}
+
+
+std::ofstream CreateFileForLT()
+{
+	std::ofstream stream;
+	stream.open("Table_Of_Lexem.txt");
+	if (!stream.is_open())
+		throw ERROR_THROW(114);
+	return stream;
+}
+
+
+int inputToLexTable(LT::LexTable lextable, int line, char lexem)//работает
 {
 	LT::Entry partOfTable;
 	partOfTable.lexema = lexem;
 	partOfTable.sn = line;
 	partOfTable.idxTI = lextable.size + 1;
 	LT::Add(lextable, partOfTable);
+	return lextable.size;
 }
 
-IT::IDTYPE typeofId(bool* isTypeOfId)//как определить, что это литерал или параметр
+IT::IDTYPE typeofId(bool* isTypeOfId)
 {
-	if (isTypeOfId[0])			//переменна€
+	if (isTypeOfId[3])			//переменна€
 		return IT::IDTYPE::V;
-	if (isTypeOfId[1])			//функци€
+	if (isTypeOfId[2])			//функци€
 		return IT::IDTYPE::F;
-	return IT::IDTYPE::P;
+	if (isTypeOfId[3] && isTypeOfId[2] )
+		return IT::IDTYPE::O;	//сторонн€€ функци€
+	return IT::IDTYPE::P;		//параметр
 }
 
 
 bool changingMachine(char* word, int line, LT::LexTable lextable, IT::IdTable idtable, FST::FST machine, int kindOfMachine)
 {
-	/*static bool isInteger = false;
-	static bool isString = false;
-	bool isFunction = false;
-	bool isVariable = false;*/
-	static bool b[4] = { false,false,false,false };
+	static bool IntStrFunVar[4] = { false,false,false,false };
 	//0 - Int
 	//1 - Str
 	//2 - Func
 	//3 - Var
+	static int lexSize = 0;
+	static int idSize = 0;
+	lextable.size = lexSize;
+	idtable.size = idSize;
 	if (!FST::execute(machine))
 		return false;
 	switch (kindOfMachine)
 	{
 	case 0:
-		inputToLexTable(lextable, line, LEX_INTEGER);
-		b[0]= true;
+		lexSize = inputToLexTable(lextable, line, LEX_INTEGER);
+		IntStrFunVar[0]= true;
 		return true;
 	case 1:
-		inputToLexTable(lextable, line, LEX_STRING);
-		b[1] = true;
+		lexSize = inputToLexTable(lextable, line, LEX_STRING);
+		IntStrFunVar[1] = true;
 		return true;
 	case 2:
-		inputToLexTable(lextable, line, LEX_FUNCTION);
-		b[2] = true;
+		lexSize = inputToLexTable(lextable, line, LEX_FUNCTION);
+		IntStrFunVar[2] = true;
 		return true;
 	case 3:
-		inputToLexTable(lextable, line, LEX_DECLARE);
-		b[3] = true;
+		lexSize = inputToLexTable(lextable, line, LEX_DECLARE);
+		IntStrFunVar[3] = true;
 		return true;
 	case 4:
-		inputToLexTable(lextable, line, LEX_RETURN);
+		lexSize = inputToLexTable(lextable, line, LEX_RETURN);
 		return true;
 	case 5:
-		inputToLexTable(lextable, line, LEX_PRINT);
+		lexSize = inputToLexTable(lextable, line, LEX_PRINT);
 		return true;
 	case 6:
-		if (b[0])
+		if (IntStrFunVar[0])
 		{
-			inputToIdTable(idtable, IT::IDDATATYPE::INT, word, b);
-			b[0] = false;
-			b[2] = false;
-			b[3] = false;
+			idSize = inputToIdTable(idtable, IT::IDDATATYPE::INT, word, IntStrFunVar);
+			IntStrFunVar[0] = false;
+			IntStrFunVar[2] = false;
+			IntStrFunVar[3] = false;
 			return true;
 		}
-		if (b[1])
+		if (IntStrFunVar[1])
 		{
-			inputToIdTable(idtable, IT::IDDATATYPE::STR, word, b);
-			b[1] = false;
-			b[2] = false;
-			b[3] = false;
+			idSize = inputToIdTable(idtable, IT::IDDATATYPE::STR, word, IntStrFunVar);
+			IntStrFunVar[1] = false;
+			IntStrFunVar[2] = false;
+			IntStrFunVar[3] = false;
 			return true;
 		}
 		break;
 	case 7:
+		idSize = inputToIdTable(idtable, IT::IDDATATYPE::)
 		break;
+	case 8:
+		lexSize = inputToLexTable(lextable, line, LEX_MAIN);
+		return true;
 	default:
 		break;
 	}

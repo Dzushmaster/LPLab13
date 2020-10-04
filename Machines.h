@@ -58,7 +58,12 @@ FST::NODE(1, FST::RELATION('n',4)),\
 FST::NODE(1, FST::RELATION('t',5)),\
 FST::NODE()
 
-
+#define FST_MAIN word, 5,\
+FST::NODE(1,FST::RELATION('m',1)),\
+FST::NODE(1,FST::RELATION('a',2)),\
+FST::NODE(1,FST::RELATION('i',3)),\
+FST::NODE(1,FST::RELATION('n',4)),\
+FST::NODE()
 
 #define FST_NUMBLITERAL word,1,\
 FST::NODE(11, FST::RELATION('1',0),\
@@ -74,7 +79,7 @@ FST::NODE(11, FST::RELATION('1',0),\
 			  FST::NODE())
 
 #define FST_IDENTIFICATOR word, 1,\
-FST::NODE(29, FST::RELATION('a',0),\
+FST::NODE(28, FST::RELATION('a',0),\
 			  FST::RELATION('b',0),\
 			  FST::RELATION('b',0),\
 			  FST::RELATION('c',0),\
@@ -101,7 +106,6 @@ FST::NODE(29, FST::RELATION('a',0),\
 			  FST::RELATION('x',0),\
 			  FST::RELATION('y',0),\
 			  FST::RELATION('z',0),\
-			  FST::RELATION('_',0),\
 			  FST::NODE())
 //добавлять main или нет
 //#define FST_MAIN word,5,\
@@ -111,7 +115,7 @@ FST::NODE(29, FST::RELATION('a',0),\
 //FST::NODE(1, FST::RELATION('n',4)),\
 //FST::NODE()
 
-#define AMOUNTLEXEM 8
+#define AMOUNTLEXEM 9
 #define ALL_MACHINES \
 FST::FST Integer(FST_INTEGER);\
 FST::FST String(FST_STRING);\
@@ -121,9 +125,10 @@ FST::FST Return(FST_RETURN);\
 FST::FST Print(FST_PRINT);\
 FST::FST Identificator(FST_IDENTIFICATOR);\
 FST::FST NumberLiteral(FST_NUMBLITERAL);\
-FST::FST CHOOSINGMACHINE[AMOUNTLEXEM] = {Integer, String, Function, Declare, Return, Print, Identificator,NumberLiteral};
+FST::FST Main(FST_MAIN);\
+FST::FST CHOOSINGMACHINE[AMOUNTLEXEM] = {Integer, String, Function, Declare, Return, Print, Identificator,NumberLiteral,Main};
 
 bool changingMachine(char* word, int line, LT::LexTable lextable, IT::IdTable idtable, FST::FST machine, int kindOfMachine);
-void inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bool* isTypeOfId);
-void inputToLexTable(LT::LexTable lextable, int line, char lexem);
+int inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bool* isTypeOfId);
+int inputToLexTable(LT::LexTable lextable, int line, char lexem);
 IT::IDTYPE typeofId(bool* isTypeOfId);

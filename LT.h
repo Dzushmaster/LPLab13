@@ -39,11 +39,15 @@ namespace LT//таблица лексем
 		int size;//текущий размер таблицы лексем <maxsize
 		Entry* table;//массив строк таблицы лексем
 	};
-	struct WriteInFile
-	{
-		 std::string nameOfFile = "LexTable.txt";
-		 std::ofstream* stream;
-	};
+
+
+	//struct WriteInFile
+	//{
+	//	 std::string nameOfFile = "LexTable.txt";
+	//	 std::ofstream* stream;
+	//};
+	
+	
 	LexTable Create(//создать таблицу лексем
 		int size//емкость таблицы лексем < LT_MAXSIZE
 	);
@@ -56,6 +60,6 @@ namespace LT//таблица лексем
 		int n//номер получаемой строки
 	);
 	void Delete(LexTable& lextable);//удалить таблицу лексем(освободить память)
-	void WriteLexemTable(WriteInFile, LexTable);
-	WriteInFile OpenStream();
+	//void WriteLexemTable(WriteInFile, LexTable);
+	//WriteInFile OpenStream();
 };

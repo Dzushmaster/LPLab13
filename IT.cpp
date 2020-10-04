@@ -8,9 +8,9 @@ IdTable IT::Create(int size)
 	if (size > TI_MAXSIZE)
 		throw ERROR_THROW(121);
 	IdTable idtable;
-	idtable.maxsize = TI_MAXSIZE;
-	idtable.size = size;
-	idtable.table = new Entry[TI_MAXSIZE];
+	idtable.maxsize =size;
+	idtable.size = 0;
+	idtable.table = new Entry[size];
 	return idtable;
 }
 void IT::Add(IdTable& idtable, Entry entry)

@@ -76,8 +76,6 @@ void choiceOfMachines(int wordSize, In::IN in, LT::LexTable lextable, IT::IdTabl
 	for (int i = 0; i < wordSize; i++)
 		word[i] = in.text[sizeofText + i];
 	word[wordSize] = '\0';
-	//во время создания каждого элемента fst счетчик размера таблицы лексем обнуляется
-	//можно создать возврщаемое значение и по позвращении из функции, записывать его в size
 	//просто в статическую переменную
 	bool Disassembled = false;
 	ALL_MACHINES;
