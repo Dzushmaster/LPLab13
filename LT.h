@@ -4,7 +4,7 @@
 #define LEXEMA_FIXSIZE 1				//фиксированный размер лексемы
 #define LT_MAXSIZE 4096					//максимальное количество строк в таблице лексем
 #define LT_TI_NULLIDX 0xffffffff		//нет элемента таблицы идентификаторов
-#define AMOUNTTYPES 4
+#define AMOUNTEXPRESSIONS 10
 #define LEX_INTEGER 't'					
 #define LEX_STRING 't'
 #define LEX_ID 'i'
@@ -19,11 +19,17 @@
 #define LEX_BRACELEFT '}'
 #define LEX_LEFTHESIS '('
 #define LEX_REIGHTHESIS ')'
-#define LEX_PLUS 'v'
-#define LEX_MINUS 'v'
-#define LEX_STAR 'v'
-#define LEX_DIRSLASH 'v'				//лексема для /
+#define LEX_PLUS '+'
+#define LEX_MINUS '-'
+#define LEX_STAR '*'
+#define LEX_DIRSLASH '/'				//лексема для /
+#define LEX_EQUALS '='
 #define LEX_MAIN 'm'
+//#define LEX_PLUS 'v'
+//#define LEX_MINUS 'v'
+//#define LEX_STAR 'v'
+//#define LEX_DIRSLASH 'v'				//лексема для /
+//#define LEX_EQUALS 'v'
 //подключить в in эту библиотеку и если символ не нужно разбирать, то просто записать эту лексему
 namespace LT//таблица лексем
 {
@@ -40,14 +46,6 @@ namespace LT//таблица лексем
 		Entry* table;//массив строк таблицы лексем
 	};
 
-
-	//struct WriteInFile
-	//{
-	//	 std::string nameOfFile = "LexTable.txt";
-	//	 std::ofstream* stream;
-	//};
-	
-	
 	LexTable Create(//создать таблицу лексем
 		int size//емкость таблицы лексем < LT_MAXSIZE
 	);
@@ -60,6 +58,4 @@ namespace LT//таблица лексем
 		int n//номер получаемой строки
 	);
 	void Delete(LexTable& lextable);//удалить таблицу лексем(освободить память)
-	//void WriteLexemTable(WriteInFile, LexTable);
-	//WriteInFile OpenStream();
 };

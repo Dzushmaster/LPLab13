@@ -1,11 +1,12 @@
 #include "Error.h"
 #include "In.h"
 #include "FST.h"
+#include "Machines.h"
 #include <fstream>
 
 using namespace In;
 //если нельзя разобрать автоматом, то идентификатор
-IN In::getin(wchar_t inFile[],LT::LexTable lextable,IT::IdTable idtable)
+IN In::getin(wchar_t inFile[],LT::LexTable& lextable, IT::IdTable& idtable)
 {
 	std::ifstream FileIn(inFile);
 	if (!FileIn.is_open())
@@ -74,18 +75,21 @@ IN In::getin(wchar_t inFile[],LT::LexTable lextable,IT::IdTable idtable)
 			isWord = false;
 			isSpace ? (in.text[in.size - 1] = Uch, isSpace = false, in.ignor++) : (in.text[in.size] = Uch, CurrentPosition++, in.size++);
 			isExpression = true;
+			choiceOfMachines((char)Uch, in, lextable, idtable);
 			break;
 		}
 		case IN::Q:
 		{
-			isWord = false;
+			isWord = true;
 			bool isQuote = false;//наличие первой кавычки
+			int sizeOfSTRLiteral = 0;
 			while (true)
 			{
 				in.text[in.size++] = Uch;
 				Uch = FileIn.get();
 				if (FileIn.eof())
 					break;
+				sizeOfSTRLiteral++;
 				if (Uch == '\'')
 				{
 					in.text[in.size++] = Uch;
@@ -95,6 +99,7 @@ IN In::getin(wchar_t inFile[],LT::LexTable lextable,IT::IdTable idtable)
 				else if (Uch == '\n' && !isQuote)
 					throw ERROR_THROW_IN(105, in.lines, CurrentPosition);
 			}
+			choiceOfMachines(sizeOfSTRLiteral, in, lextable, idtable);
 			break;
 		}
 		default:
@@ -112,6 +117,7 @@ IN In::getin(wchar_t inFile[],LT::LexTable lextable,IT::IdTable idtable)
 		}
 
 	}
+	in.textAfterLex[in.sizeAfterLex] = '\0';
 	in.text[in.size] = '\0';
 	FileIn.close();
 	return in;

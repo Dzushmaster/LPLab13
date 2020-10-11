@@ -9,6 +9,7 @@
 #include "FST.h"
 #include "Out.h"
 #include "LT.h"
+#include "PrintTables.h"
 using namespace std;
 
 
@@ -29,13 +30,15 @@ int wmain(int argc, wchar_t* argv[])
 		IT::IdTable idtable = IT::Create(TI_MAXSIZE);
 		//-----------------------------------------
 		In::IN in = In::getin(parm.in, lextable,idtable);
-		LT::WriteInFile LTFile= LT::OpenStream();
-//		LT::WriteLexemTable(LTFile, lextable);
+		PrintIDTable(idtable);
+		PrintLTTable(lextable);
 		Log::WriteIn(log, in);
 		Out::OUT out = Out::getout(parm.out);
 		Out::WriteAnalyze(out, in, log);
 		Log::Close(log);
 		Out::OutClose(out);
+		LT::Delete(lextable);
+		IT::Delete(idtable);
 		delete[] in.text;			//Удаляем использованную память
 	}
 	catch (Error::ERROR e)

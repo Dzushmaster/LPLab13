@@ -35,3 +35,5 @@ void IT::Delete(IdTable& idtable)
 {
 	delete[] idtable.table;
 }
+
+

@@ -5,7 +5,8 @@
 #define TI_STR_DEFAULT 0x00			//значение по умолчаню для типа string
 #define TI_NULLIDX 0xffffffff		//нет элемента таблицы идентификаторов
 #define TI_STR_MAXSIZE 255
-
+#define PREFIX_SIZE 10
+#include <iostream>
 namespace IT
 {
 	enum IDDATATYPE {INT = 1, STR = 2};//типы данных integer и string
@@ -14,12 +15,12 @@ namespace IT
 	{
 		int idxfirstLE;					//индекс первой строки в таблице лексем
 		char id[ID_MAXSIZE+1];			//идентификатор(автоматически усекается до ID_MAXSIZE)
-		//string libraryFunction - для библиотечных функций
+		char prefix[PREFIX_SIZE+1];		//используется для определения области видимости
 		IDDATATYPE iddatatype;			//тип данных
 		IDTYPE idtype;					//тип идентификатора
 		union
 		{
-			int vint;					//значение integer
+			int vint;
 			struct
 			{
 				char ken;						//количество символов в string

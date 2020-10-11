@@ -2,15 +2,6 @@
 #include "Error.h"
 #include <time.h>
 using namespace Out;
-//#define FST_STRUCT \
-FST::NODE(1, FST::RELATION('a',1)),\
-FST::NODE(1,FST::RELATION('f',2)),\
-FST::NODE(4,FST::RELATION('g',2), FST::RELATION('b',3), FST::RELATION('c',3), FST::RELATION('d',3)), \
-FST::NODE(1,FST::RELATION('f',4)),\
-FST::NODE(5,FST::RELATION('e',6),FST::RELATION('g',5), FST::RELATION('b',3), FST::RELATION('c',3), FST::RELATION('d',3)), \
-FST::NODE(2, FST::RELATION('e',6), FST::RELATION('g',5)),\
-FST::NODE(1,FST::RELATION('f',7)),\
-FST::NODE()
 
 	OUT Out::getout(wchar_t outfile[])
 	{
@@ -40,31 +31,8 @@ FST::NODE()
 		*out.stream << IN_CODE_ENDL << "----- Анализ ----- ";
 		strftime(buffer, 300, " Дата: %d.%m.%Y %H:%M:%S", &timeinfo);
 		*out.stream << buffer << " ----- " << IN_CODE_ENDL << IN_CODE_ENDL;
-#ifdef FST_STRUCT
-		while (!(in.text[j] == '\0'))
-		{
-			int i = 0;
-			char* TextChain = new char[in.size];
-			while (!(in.text[j] == '|'))
-			{
-				TextChain[i] = in.text[j];
-				i++;
-				j++;
-			}
-			TextChain[i] = '\0';
-			chain++;
-			j++;
-			FST::FST fst((char*)TextChain, 8, FST_STRUCT);
-			if (FST::execute(fst))
-				*out.stream << "Цепочка " << TextChain <<" распознана" << IN_CODE_ENDL;
-			else
-			{
-				*out.stream << "Цепочка № " << chain << ' ' <<TextChain << " не распознана, номер символа " << fst.position +1<<IN_CODE_ENDL;
-				*log.stream << "Цепочка № " << chain << ' ' << TextChain << " не распознана, номер символа " << fst.position +1<<IN_CODE_ENDL;
-			}
-			delete[]TextChain;
-		}
-#endif // FST_STRUCT
+		//должна присутствовать нумерация строк и вывод как код в VS
+		//вывод текста из лексем
 	}
 	void Out::OutClose(OUT out)
 	{

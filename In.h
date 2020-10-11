@@ -31,7 +31,9 @@ namespace In
 		int lines = 1;
 		int ignor = 0;
 		unsigned char* text;	//Исходный код Windows-1251
+		unsigned char* textAfterLex = new unsigned char();
+		int sizeAfterLex = 0;
 		int code[256] = IN_CODE_TABLE;			//Таблица проверки
 	};
-	IN getin(wchar_t inFile[],LT::LexTable lextable, IT::IdTable idtable );
+	IN getin(wchar_t inFile[], LT::LexTable&, IT::IdTable&);
 }

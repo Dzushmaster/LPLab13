@@ -1,126 +1,179 @@
 #include "Machines.h"
 #include "IT.h"
 #include "LT.h"
-
-int inputToIdTable(IT::IdTable idtable, IT::IDDATATYPE dataType, char* word, bool* isTypeOfId)//кажетс€, работает, но как записать туда значение, записанное в идентификаторе
+#include "PrintTables.h"
+int inputToIdTable(IT::IdTable& idtable,In::IN in, IT::IDDATATYPE dataType, char* word, bool* IntStrFunVarMain, bool& isBraceLeft)
 {
 	IT::Entry partOfTable;
 	strncpy_s(partOfTable.id, word, 5);
 	partOfTable.iddatatype = dataType;
-	partOfTable.idxfirstLE = idtable.size + 1;
-	partOfTable.idtype = typeofId(isTypeOfId);
+	partOfTable.idxfirstLE = in.lines;
+	//partOfTable.idxfirstLE = idtable.size + 1; переделать этот фрагмент
+	if (dataType == IT::IDDATATYPE::STR)
+	{
+		partOfTable.value.vstr->ken = 0;
+		partOfTable.value.vstr->str[0] = TI_STR_DEFAULT;
+	}
+	else
+		partOfTable.value.vint = TI_INT_DEFAULT;
+	partOfTable.idtype = typeofId(IntStrFunVarMain);
+	DefineScope(partOfTable,isBraceLeft, IntStrFunVarMain);
 	IT::Add(idtable, partOfTable);
+	in.textAfterLex[in.sizeAfterLex++] = 'i';
 	//форматированный вывод std::cout.width(5);
-	std::cout << partOfTable.id << ':' << partOfTable.iddatatype << ':' << partOfTable.idtype << ':' << partOfTable.idxfirstLE <<'\n';
 	//std::cout.setf(std::ios::left);
-
+	return idtable.size;
+}
+int inputToIdTable(IT::IdTable& idtable,In::IN in ,IT::IDDATATYPE iddatatype, char* word, IT::IDTYPE idtype)
+{
+	IT::Entry partOfTable;
+	if (iddatatype == IT::IDDATATYPE::STR)
+	{
+		partOfTable.value.vstr->ken = strlen(word);
+		strncpy_s(partOfTable.value.vstr->str, word, strlen(word));
+	}
+	else
+		partOfTable.value.vint=atoi(word);
+	in.textAfterLex[in.sizeAfterLex++] = 'i';
+	partOfTable.iddatatype = iddatatype;
+	partOfTable.idtype = idtype;
+	IT::Add(idtable, partOfTable);
 	return idtable.size;
 }
 
-std::ofstream CreateFileForID()
+IT::IDTYPE typeofId(bool* IntStrFunVarMain)
 {
-	std::ofstream stream;
-	stream.open("Table_Of_Identificators.txt");
-	if (!stream.is_open())
-		throw ERROR_THROW(114);
-	return stream;
-}
-
-
-std::ofstream CreateFileForLT()
-{
-	std::ofstream stream;
-	stream.open("Table_Of_Lexem.txt");
-	if (!stream.is_open())
-		throw ERROR_THROW(114);
-	return stream;
-}
-
-
-int inputToLexTable(LT::LexTable lextable, int line, char lexem)//работает
-{
-	LT::Entry partOfTable;
-	partOfTable.lexema = lexem;
-	partOfTable.sn = line;
-	partOfTable.idxTI = lextable.size + 1;
-	LT::Add(lextable, partOfTable);
-	return lextable.size;
-}
-
-IT::IDTYPE typeofId(bool* isTypeOfId)
-{
-	if (isTypeOfId[3])			//переменна€
+	if (IntStrFunVarMain[3])			//переменна€
 		return IT::IDTYPE::V;
-	if (isTypeOfId[2])			//функци€
+	if (IntStrFunVarMain[2])			//функци€
 		return IT::IDTYPE::F;
-	if (isTypeOfId[3] && isTypeOfId[2] )
+	if (IntStrFunVarMain[3] && IntStrFunVarMain[2])
 		return IT::IDTYPE::O;	//сторонн€€ функци€
 	return IT::IDTYPE::P;		//параметр
 }
 
-
-bool changingMachine(char* word, int line, LT::LexTable lextable, IT::IdTable idtable, FST::FST machine, int kindOfMachine)
+void DefineScope(IT::Entry& partOfTable, bool& isBraceLeft, bool* IntStrFunVarMain)
 {
-	static bool IntStrFunVar[4] = { false,false,false,false };
-	//0 - Int
-	//1 - Str
-	//2 - Func
-	//3 - Var
-	static int lexSize = 0;
-	static int idSize = 0;
-	lextable.size = lexSize;
-	idtable.size = idSize;
+	static char nameFunction[PREFIX_SIZE];
+	if ((IntStrFunVarMain[2] && !IntStrFunVarMain[3]))//возможно, заменить на функцию
+	{
+		strncpy_s(nameFunction, partOfTable.id, 10);
+		isBraceLeft = false; IntStrFunVarMain[2] = false;
+		partOfTable.prefix[0] = NULL;
+		return;
+	}
+	if (IntStrFunVarMain[4])
+	{
+		strncpy_s(nameFunction, "main", 4);
+		isBraceLeft = false; IntStrFunVarMain[4] = false;
+		strncpy_s(partOfTable.prefix, nameFunction, PREFIX_SIZE);
+		return;
+	}
+	if (isBraceLeft) { isBraceLeft = false; return; }
+	strncpy_s(partOfTable.prefix, nameFunction, PREFIX_SIZE);
+}
+
+int inputToLexTable(LT::LexTable& lextable, In::IN in, char lexem)//работает
+{
+	LT::Entry partOfTable;
+	partOfTable.lexema = lexem;
+	partOfTable.sn = in.lines;
+	partOfTable.idxTI = lextable.size + 1;
+	LT::Add(lextable, partOfTable);
+	in.textAfterLex[in.sizeAfterLex++] = lexem;
+	return lextable.size;
+}
+
+
+bool changingMachine(char* word, In::IN  line, LT::LexTable& lextable, IT::IdTable& idtable, FST::FST machine, int kindOfMachine)
+{
+	static bool IntStrFunVarMain[5] = { false,false,false,false,false };
+	static bool isBraceLeft = false;
 	if (!FST::execute(machine))
 		return false;
 	switch (kindOfMachine)
 	{
 	case 0:
-		lexSize = inputToLexTable(lextable, line, LEX_INTEGER);
-		IntStrFunVar[0]= true;
+		inputToLexTable(lextable, line, LEX_INTEGER);
+		IntStrFunVarMain[0]= true;
 		return true;
 	case 1:
-		lexSize = inputToLexTable(lextable, line, LEX_STRING);
-		IntStrFunVar[1] = true;
+		inputToLexTable(lextable, line, LEX_STRING);
+		IntStrFunVarMain[1] = true;
 		return true;
 	case 2:
-		lexSize = inputToLexTable(lextable, line, LEX_FUNCTION);
-		IntStrFunVar[2] = true;
+		inputToLexTable(lextable, line, LEX_FUNCTION);
+		IntStrFunVarMain[2] = true;
 		return true;
 	case 3:
-		lexSize = inputToLexTable(lextable, line, LEX_DECLARE);
-		IntStrFunVar[3] = true;
+		inputToLexTable(lextable, line, LEX_DECLARE);
+		IntStrFunVarMain[3] = true;
 		return true;
 	case 4:
-		lexSize = inputToLexTable(lextable, line, LEX_RETURN);
+		inputToLexTable(lextable, line, LEX_RETURN);
 		return true;
 	case 5:
-		lexSize = inputToLexTable(lextable, line, LEX_PRINT);
+		inputToLexTable(lextable, line, LEX_PRINT);
 		return true;
 	case 6:
-		if (IntStrFunVar[0])
-		{
-			idSize = inputToIdTable(idtable, IT::IDDATATYPE::INT, word, IntStrFunVar);
-			IntStrFunVar[0] = false;
-			IntStrFunVar[2] = false;
-			IntStrFunVar[3] = false;
-			return true;
-		}
-		if (IntStrFunVar[1])
-		{
-			idSize = inputToIdTable(idtable, IT::IDDATATYPE::STR, word, IntStrFunVar);
-			IntStrFunVar[1] = false;
-			IntStrFunVar[2] = false;
-			IntStrFunVar[3] = false;
-			return true;
-		}
-		break;
-	case 7:
-		idSize = inputToIdTable(idtable, IT::IDDATATYPE::)
-		break;
-	case 8:
-		lexSize = inputToLexTable(lextable, line, LEX_MAIN);
+		inputToLexTable(lextable, line, LEX_MAIN);
+		IntStrFunVarMain[4] = true;
 		return true;
-	default:
+	case 7:
+		inputToIdTable(idtable,line ,IT::IDDATATYPE::INT, word, IT::IDTYPE::L);
+		return true;
+	case 8:
+		inputToIdTable(idtable,line ,IT::IDDATATYPE::STR, word, IT::IDTYPE::L);
+		return true;
+	case 9:
+		if (IntStrFunVarMain[0])
+		{
+			inputToIdTable(idtable,line ,IT::IDDATATYPE::INT, word, IntStrFunVarMain, isBraceLeft);
+			IntStrFunVarMain[0] = false;
+			IntStrFunVarMain[2] = false;
+			IntStrFunVarMain[3] = false;
+			return true;
+		}
+		if (IntStrFunVarMain[1])
+		{
+			inputToIdTable(idtable,line ,IT::IDDATATYPE::STR, word, IntStrFunVarMain, isBraceLeft);
+			IntStrFunVarMain[1] = false;
+			IntStrFunVarMain[2] = false;
+			IntStrFunVarMain[3] = false;
+			return true;
+		}
 		break;
+	
+	case 10:
+		inputToLexTable(lextable, line, LEX_BRACELEFT);
+		isBraceLeft = true;
+		return true;
+	case 11:
+		inputToLexTable(lextable, line, LEX_LEFTBRACE);
+		return true;
+	case 12:
+		inputToLexTable(lextable, line, LEX_SEMICOLON);
+		return true;
+	case 13:
+		inputToLexTable(lextable, line, LEX_COMMA);
+		return true;
+	case 14:
+		inputToLexTable(lextable, line, LEX_LEFTHESIS);
+		return true;
+	case 15:
+		inputToLexTable(lextable, line, LEX_REIGHTHESIS);
+		return true;
+	case 16:
+		inputToLexTable(lextable, line, LEX_PLUS);
+		return true;
+	case 17:
+		inputToLexTable(lextable, line, LEX_MINUS);
+		return true;
+	case 18:
+		inputToLexTable(lextable, line, LEX_STAR);
+		return true;
+	case 19:
+		inputToLexTable(lextable, line, LEX_DIRSLASH);
+		return true;
 	}
 }

@@ -66,21 +66,32 @@ namespace FST
 		return (rc ? (fst.rstates[fst.nstates - 1] == lstring) : rc);
 	}
 }
-//полностью переделать функцию снизу
-void choiceOfMachines(int wordSize, In::IN in, LT::LexTable lextable, IT::IdTable idtable)//переработать функцию
+void choiceOfMachines(int wordSize, In::IN in, LT::LexTable& lextable, IT::IdTable& idtable)//переработать функцию
 {
 	// если есть цифра - литерал, если есть кавычка, тоже литерал
-	char* word = new char[wordSize];
-	short sizeofText = in.size - wordSize - 1;
-	//пока альтернативы циклу нет
-	for (int i = 0; i < wordSize; i++)
+	char* word = new char[wordSize+1];
+	short sizeofText = in.size - wordSize-1;
+	for (int i = 0; i <= wordSize; i++)
 		word[i] = in.text[sizeofText + i];
+	if (word[wordSize] == '\'')
+		word[wordSize+1] = '\0';
 	word[wordSize] = '\0';
 	//просто в статическую переменную
 	bool Disassembled = false;
 	ALL_MACHINES;
-	for (int kingOfMachine = 0; kingOfMachine < AMOUNTLEXEM && !Disassembled; kingOfMachine++)
+	for (int kindOfMachine = 0; kindOfMachine < AMOUNTLEXEM/2 && !Disassembled; kindOfMachine++)
 	{
-		Disassembled = changingMachine(word,in.lines,lextable,idtable,CHOOSINGMACHINE[kingOfMachine],kingOfMachine);
+		Disassembled = changingMachine(word,in,lextable,idtable,CHOOSINGMACHINE[kindOfMachine],kindOfMachine);
+	}
+}
+void choiceOfMachines(char symbol, In::IN in, LT::LexTable& lextable, IT::IdTable& idtable)
+{
+	char word[2];
+	word[0] = symbol; word[1] = '\0';
+	bool Disassembled = false;
+	ALL_MACHINES;
+	for (int kindOfExpression = AMOUNTLEXEM/2; kindOfExpression < AMOUNTLEXEM; kindOfExpression++)
+	{
+		Disassembled = changingMachine(word, in, lextable, idtable, CHOOSINGMACHINE[kindOfExpression], kindOfExpression);
 	}
 }
