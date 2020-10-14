@@ -6,9 +6,9 @@
 void PrintLTTable(LT::LexTable);
 void PrintIDTable(IT::IdTable);
 void PrintText(In::IN in);
-const char* PrintIdType(IT::IDTYPE idtype);
-const char* PrintIddatatype(IT::IDDATATYPE datatype);
-const char* PrintValue(IT::IdTable value);
+const char* ReturnIdType(IT::IDTYPE idtype);
+const char* ReturnIddatatype(IT::IDDATATYPE datatype);
+const char* ReturnValue(IT::Entry value);
 const char* PrintPrefix(IT::IdTable value);
 std::ofstream CreateFileForLT();
 std::ofstream CreateFileForID();

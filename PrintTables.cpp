@@ -28,7 +28,7 @@ std::ofstream CreateFileForText()
 void PrintText(In::IN in)
 {
 	std::ofstream stream = CreateFileForText();
-	
+	//вывод id из таблицы идентификаторов
 }
 void PrintLTTable(LT::LexTable lextable)
 {
@@ -53,22 +53,23 @@ void PrintIDTable(IT::IdTable idtable)
 	stream << "Размер таблицы идентификаторов: ";
 	stream << idtable.size;
 	stream << "\n";
-	for (int i = 0; i < idtable.size; i++)
+	stream << "Номер идентификатора -> Идентификатор -> Тип данных -> Тип идентификатора -> Нечто -> Значение\n";
+	for (int i = 0; i < idtable.size; i++)//исправить вывод в файл(если нет id, не выводить id)
 	{
-
+		stream.width(5);
 		stream << i + 1;
-		//stream.width(15);
-		/*stream << idtable.table[i].prefix;
+		stream.width(25);
+		/*stream << idtable.table[i].prefix;//подумать, как возвращать с ::
 		stream << "::";*/
 		stream << idtable.table[i].id;
-		//stream.width(10);
-		stream << PrintIddatatype(idtable.table[i].iddatatype);
-		//stream.width(12);
-		stream << PrintIdType(idtable.table[i].idtype);
-		//stream.width(5);
+		stream.width(20);
+		stream << ReturnIddatatype(idtable.table[i].iddatatype);
+		stream.width(20);
+		stream << ReturnIdType(idtable.table[i].idtype);
+		stream.width(10);
 		stream << idtable.table[i].idxfirstLE;
-		//stream.width(7);
-		stream << PrintValue(idtable);
+		stream.width(10);
+		stream << ReturnValue(idtable.table[i]);
 		stream << '\n';
 	}
 }
@@ -76,17 +77,17 @@ void PrintIDTable(IT::IdTable idtable)
 //{
 //	if (idtable.table->prefix == NULL)
 //		return "";
-//	char* ch = idtable.table->prefix;
+//	
 //	return ;
 //}
-const char* PrintIddatatype(IT::IDDATATYPE datatype)
+const char* ReturnIddatatype(IT::IDDATATYPE datatype)
 {
 	if (datatype == IT::IDDATATYPE::INT)
 		return "integer";
 	if (datatype == IT::IDDATATYPE::STR)
 		return "string";
 }
-const char* PrintIdType(IT::IDTYPE idtype)
+const char* ReturnIdType(IT::IDTYPE idtype)
 {
 	switch (idtype)
 	{
@@ -99,13 +100,28 @@ const char* PrintIdType(IT::IDTYPE idtype)
 	case 4:
 		return "literal";
 	case 5:
-		return "third party function";
+		return "outside function";
 	}
 }
-const char* PrintValue(IT::IdTable value)
+bool checkFunc_Par(IT::Entry value)
 {
-	if (value.table->value.vint == TI_INT_DEFAULT)
-		return "0";
-	if (value.table->value.vstr->str == TI_STR_DEFAULT)
-		return "0";
+	return (IT::F == value.idtype || IT::P == value.idtype || IT::O == value.idtype);
+}
+const char* ReturnValue(IT::Entry value)
+{
+	if (IT::F != value.idtype)
+	{
+		if (value.value.vint == TI_INT_DEFAULT)
+			return "0";
+		if (value.value.vint != TI_INT_DEFAULT)//проверить
+		{
+			char symb[11];
+			_itoa_s(value.value.vint, symb, 10);
+			return symb;
+		}
+		if (strcmp(value.value.vstr->str,NULL) == 0)
+			return "0";
+		return value.value.vstr->str;
+	}
+	return "";
 }

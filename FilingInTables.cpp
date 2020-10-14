@@ -2,29 +2,34 @@
 #include "IT.h"
 #include "LT.h"
 #include "PrintTables.h"
-int inputToIdTable(IT::IdTable& idtable,In::IN in, IT::IDDATATYPE dataType, char* word, bool* IntStrFunVarMain, bool& isBraceLeft)
+char* inputWord()
+{
+
+}
+void inputToIdTable(IT::IdTable& idtable,In::IN in, IT::IDDATATYPE dataType, char* word, bool* IntStrFunVarMain, bool& isBraceLeft)
 {
 	IT::Entry partOfTable;
-	strncpy_s(partOfTable.id, word, 5);
 	partOfTable.iddatatype = dataType;
 	partOfTable.idxfirstLE = in.lines;
-	//partOfTable.idxfirstLE = idtable.size + 1; переделать этот фрагмент
-	if (dataType == IT::IDDATATYPE::STR)
+	partOfTable.idtype = typeofId(IntStrFunVarMain);
+	defineIdName(partOfTable, word);
+	if (dataType == IT::IDDATATYPE::STR && (IT::F !=partOfTable.idtype || IT::O != partOfTable.idtype))//исправить
 	{
 		partOfTable.value.vstr->ken = 0;
 		partOfTable.value.vstr->str[0] = TI_STR_DEFAULT;
+		//partOfTable.value.vstr->str[0] = TI_STR_DEFAULT;
 	}
-	else
+	else if (IT::F != partOfTable.idtype || IT::O != partOfTable.idtype)
 		partOfTable.value.vint = TI_INT_DEFAULT;
-	partOfTable.idtype = typeofId(IntStrFunVarMain);
-	DefineScope(partOfTable,isBraceLeft, IntStrFunVarMain);
+	DefineScope(partOfTable, isBraceLeft, IntStrFunVarMain);
 	IT::Add(idtable, partOfTable);
-	in.textAfterLex[in.sizeAfterLex++] = 'i';
-	//форматированный вывод std::cout.width(5);
-	//std::cout.setf(std::ios::left);
-	return idtable.size;
+	//in.textAfterLex[in.sizeAfterLex++] = 'i';
 }
-int inputToIdTable(IT::IdTable& idtable,In::IN in ,IT::IDDATATYPE iddatatype, char* word, IT::IDTYPE idtype)
+void defineIdName(IT::Entry& partOfTable, char* word)//заменить переменную, в которую записываетс€ значение
+{
+	partOfTable.idtype == IT::P? strncpy_s(partOfTable.id,word,10): strncpy_s(partOfTable.id, word, 5);
+}
+void inputToIdTable(IT::IdTable& idtable,In::IN in ,IT::IDDATATYPE iddatatype, char* word, IT::IDTYPE idtype)
 {
 	IT::Entry partOfTable;
 	if (iddatatype == IT::IDDATATYPE::STR)
@@ -33,23 +38,24 @@ int inputToIdTable(IT::IdTable& idtable,In::IN in ,IT::IDDATATYPE iddatatype, ch
 		strncpy_s(partOfTable.value.vstr->str, word, strlen(word));
 	}
 	else
-		partOfTable.value.vint=atoi(word);
+		partOfTable.value.vint = atoi(word);
 	in.textAfterLex[in.sizeAfterLex++] = 'i';
 	partOfTable.iddatatype = iddatatype;
 	partOfTable.idtype = idtype;
+	partOfTable.id[0] = '\0';
+	partOfTable.idxfirstLE = in.lines;
 	IT::Add(idtable, partOfTable);
-	return idtable.size;
 }
 
 IT::IDTYPE typeofId(bool* IntStrFunVarMain)
 {
-	if (IntStrFunVarMain[3])			//переменна€
+	if (IntStrFunVarMain[3] && IntStrFunVarMain[2]) //сторонн€€ функци€
+		return IT::IDTYPE::O;
+	if (IntStrFunVarMain[3])						//переменна€
 		return IT::IDTYPE::V;
-	if (IntStrFunVarMain[2])			//функци€
+	if (IntStrFunVarMain[2])						//функци€
 		return IT::IDTYPE::F;
-	if (IntStrFunVarMain[3] && IntStrFunVarMain[2])
-		return IT::IDTYPE::O;	//сторонн€€ функци€
-	return IT::IDTYPE::P;		//параметр
+	return IT::IDTYPE::P;							//параметр
 }
 
 void DefineScope(IT::Entry& partOfTable, bool& isBraceLeft, bool* IntStrFunVarMain)
@@ -69,11 +75,11 @@ void DefineScope(IT::Entry& partOfTable, bool& isBraceLeft, bool* IntStrFunVarMa
 		strncpy_s(partOfTable.prefix, nameFunction, PREFIX_SIZE);
 		return;
 	}
-	if (isBraceLeft) { isBraceLeft = false; return; }
+	if (isBraceLeft) { isBraceLeft = false; return; }			//проверить этот фрагмент кода
 	strncpy_s(partOfTable.prefix, nameFunction, PREFIX_SIZE);
 }
 
-int inputToLexTable(LT::LexTable& lextable, In::IN in, char lexem)//работает
+void inputToLexTable(LT::LexTable& lextable, In::IN in, char lexem)//работает
 {
 	LT::Entry partOfTable;
 	partOfTable.lexema = lexem;
@@ -81,7 +87,6 @@ int inputToLexTable(LT::LexTable& lextable, In::IN in, char lexem)//работает
 	partOfTable.idxTI = lextable.size + 1;
 	LT::Add(lextable, partOfTable);
 	in.textAfterLex[in.sizeAfterLex++] = lexem;
-	return lextable.size;
 }
 
 
@@ -175,5 +180,11 @@ bool changingMachine(char* word, In::IN  line, LT::LexTable& lextable, IT::IdTab
 	case 19:
 		inputToLexTable(lextable, line, LEX_DIRSLASH);
 		return true;
+	case 20:
+		inputToLexTable(lextable, line, LEX_EQUALS);
+		return true;
+	default:
+		throw ERROR_THROW_IN(124, line.lines, line.size);
+		break;
 	}
 }

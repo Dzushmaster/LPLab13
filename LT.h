@@ -22,7 +22,7 @@
 #define LEX_PLUS '+'
 #define LEX_MINUS '-'
 #define LEX_STAR '*'
-#define LEX_DIRSLASH '/'				//лексема для /
+#define LEX_DIRSLASH '/'
 #define LEX_EQUALS '='
 #define LEX_MAIN 'm'
 //#define LEX_PLUS 'v'
@@ -30,6 +30,7 @@
 //#define LEX_STAR 'v'
 //#define LEX_DIRSLASH 'v'				//лексема для /
 //#define LEX_EQUALS 'v'
+
 //подключить в in эту библиотеку и если символ не нужно разбирать, то просто записать эту лексему
 namespace LT//таблица лексем
 {

@@ -76,6 +76,8 @@ void choiceOfMachines(int wordSize, In::IN in, LT::LexTable& lextable, IT::IdTab
 	if (word[wordSize] == '\'')
 		word[wordSize+1] = '\0';
 	word[wordSize] = '\0';
+	if (!word[0])
+		return;
 	//просто в статическую переменную
 	bool Disassembled = false;
 	ALL_MACHINES;
@@ -90,7 +92,7 @@ void choiceOfMachines(char symbol, In::IN in, LT::LexTable& lextable, IT::IdTabl
 	word[0] = symbol; word[1] = '\0';
 	bool Disassembled = false;
 	ALL_MACHINES;
-	for (int kindOfExpression = AMOUNTLEXEM/2; kindOfExpression < AMOUNTLEXEM; kindOfExpression++)
+	for (int kindOfExpression = AMOUNTLEXEM/2; kindOfExpression < AMOUNTLEXEM && !Disassembled; kindOfExpression++)
 	{
 		Disassembled = changingMachine(word, in, lextable, idtable, CHOOSINGMACHINE[kindOfExpression], kindOfExpression);
 	}

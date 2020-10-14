@@ -13,11 +13,12 @@ namespace IT
 	enum IDTYPE { V = 1, F = 2, P = 3, L = 4, O = 5 };//типы идентификаторов: переменна€, функци€, параметр, литерал, сторонн€€ функци€
 	struct Entry						//строка таблицы идентификаторов
 	{
-		int idxfirstLE;					//индекс первой строки в таблице лексем
-		char id[ID_MAXSIZE+1];			//идентификатор(автоматически усекаетс€ до ID_MAXSIZE)
-		char prefix[PREFIX_SIZE+1];		//используетс€ дл€ определени€ области видимости
-		IDDATATYPE iddatatype;			//тип данных
-		IDTYPE idtype;					//тип идентификатора
+		int idxfirstLE;								//индекс первой строки в таблице лексем
+		char id[ID_MAXSIZE+1];						//идентификатор(автоматически усекаетс€ до ID_MAXSIZE)
+		char outsideFunction[PREFIX_SIZE + 1];		//сторонн€€ функци€
+		char prefix[PREFIX_SIZE+1];			//используетс€ дл€ определени€ области видимости
+		IDDATATYPE iddatatype;						//тип данных
+		IDTYPE idtype;								//тип идентификатора
 		union
 		{
 			int vint;

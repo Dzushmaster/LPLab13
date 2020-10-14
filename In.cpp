@@ -50,18 +50,18 @@ IN In::getin(wchar_t inFile[],LT::LexTable& lextable, IT::IdTable& idtable)
 			isWord = true;
 			in.size++;
 			CurrentPosition++;
-			break;
+			continue;
 		}
 		case IN::S:
 		{
-			isWord = false;
 			if (isSpace)
 			{
 				in.ignor++;
-				break;
+				continue;
 			}
 			else
 			{
+				isWord = false;
 				isSpace = true;
 				in.text[in.size++] = Uch;
 				CurrentPosition++;
@@ -99,7 +99,10 @@ IN In::getin(wchar_t inFile[],LT::LexTable& lextable, IT::IdTable& idtable)
 				else if (Uch == '\n' && !isQuote)
 					throw ERROR_THROW_IN(105, in.lines, CurrentPosition);
 			}
-			choiceOfMachines(sizeOfSTRLiteral, in, lextable, idtable);
+			char* word = new char[sizeOfSTRLiteral];
+			
+			inputToIdTable(idtable, in, IT::IDDATATYPE::STR, word, IT::IDTYPE::L);
+			delete[]word;
 			break;
 		}
 		default:
@@ -108,14 +111,13 @@ IN In::getin(wchar_t inFile[],LT::LexTable& lextable, IT::IdTable& idtable)
 			CurrentPosition = 0;
 			in.size++;
 			isWord = false;
-			break;
+			continue;
 		}
 		if (!isWord)
 		{
 			choiceOfMachines(wordSize,in, lextable, idtable);//для выбора автоматов
 			wordSize = 0;
 		}
-
 	}
 	in.textAfterLex[in.sizeAfterLex] = '\0';
 	in.text[in.size] = '\0';
